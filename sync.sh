@@ -47,8 +47,10 @@ if [ "$UPLOAD" == false ] && [ "$DOWNLOAD" == false ] && [ "$CLEAN" == false ]; 
   exit 1
 fi
 
+script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
 # Load settings from config file
-config_file=".config"
+config_file="$script_dir/.config"
 declare -A CONFIG
 while IFS= read -r line || [[ -n "$line" ]]; do
   if [[ "$line" =~ ^[^#]*= ]]; then
@@ -62,7 +64,7 @@ LOCAL_PATH_BASE=${CONFIG["local_path_base"]}
 NFS_TARGET_IP=${CONFIG["nfs_target_ip"]:-""}
 
 # Load items from items files
-items_file="items.txt"
+items_file="$script_dir/items.txt"
 declare -a ITEMS
 items_file_content=$(tr '\n' ' ' < $items_file)
 IFS=$' \t' read -r -a ITEMS <<< "$items_file_content"
