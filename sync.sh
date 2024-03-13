@@ -70,6 +70,10 @@ items_file_content=$(tr '\n' ' ' < $items_file)
 IFS=$' \t' read -r -a ITEMS <<< "$items_file_content"
 
 if [ "$TARGET" == "nfs" ]; then
+  if mount | grep -q $NFS_TARGET_IP; then
+    echo "NFS target already mounted" >&2
+    exit 1
+  fi
   mount_point="/mnt/$(openssl rand -hex 2)"
   sudo mkdir -p $mount_point
   sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2 $NFS_TARGET_IP:/ $mount_point
